@@ -15,7 +15,6 @@ def parse_data(filepath):
 def get_data(data):
     rows = data.shape[0]
     cols = data.shape[1]
-    main_data = np.zeros(data.shape)
     categorical_data = []
     data0 = data[0]
     string_col = []
@@ -25,9 +24,21 @@ def get_data(data):
             data[0][i] == float(data[0][i])
         except:
             string_col.append(i)
-
-    print(string_col)
-    return main_data
+    #print(string_col)
+    for i in string_col:
+        uniques = np.unique(data[:,i])
+    #print(uniques)
+    unique_dict = {}
+    for i in uniques:
+        unique_dict[i] = len(unique_dict)
+    #print(unique_dict)
+    replace_array = []
+    for i in string_col:
+        for j in range(0,rows):
+            replace_array.append(unique_dict[data[j][i]])
+        data[:,i] = replace_array
+    print(data[0:10])
+    return data
 
 def main():
     data = parse_data('../data/dataset2.txt')
