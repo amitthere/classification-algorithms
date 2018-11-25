@@ -96,6 +96,10 @@ class DecisionTree:
         gain = gini_parent - ((Ni/N)*gini_lchild + (Nj/N)*gini_rchild)
         return gain
 
+    def majority_label(self, labels):
+        label, counts = np.unique(labels, return_counts=True)
+        return label[np.argmax(counts)]
+
     def label_counts(self, labels):
         """
         :param labels: Numpy array of labels
@@ -117,5 +121,10 @@ class DecisionTree:
             return tree
 
         split_feature, split = self.select_feature(data)
+        if split_feature == None:
+            tree.prediction = self.majority_label(data[:, -1])
+            return tree
+
+
 
         return
