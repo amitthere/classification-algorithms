@@ -7,6 +7,7 @@ class Node:
         self.feature = feature
         self.gini = None
         self.parent_gini = None
+        self.split_criteria = None
         self.datapoints = None
         self.left = left
         self.right = right
@@ -23,23 +24,34 @@ class DecisionTree:
         return
 
     def select_feature(self, data):
-        maxGain = 0
+        """ Choose the feature among all available to be split at current node
+
+        :param data: attribute values with label
+        :return: feature to be split and value of feature at which split is done
+        """
+        max_gain = 0
         feature = None
-        split = None
+        splitting_criteria = None
 
         features = np.array(range(data.shape[1]-1))
 
         for f in features:
             rsplit, gain = self.split_feature(data, f)
-            if gain > maxGain:
+            if gain > max_gain:
                 feature = f
-                split = rsplit
-                maxGain = gain
+                splitting_criteria = rsplit
+                max_gain = gain
 
-        return feature, split
+        return feature, splitting_criteria
 
     def split_feature(self, data, feature):
-        split = None
+        """ Calculates the gain and spitting criteria for certain feature
+
+        :param data: attribute values with label
+        :param feature: used for splitting
+        :return:
+        """
+        splitting_criteria = None
         max_gain = 0
         branches = self.feature_possible_splits(data, feature)
         labels = data[:, -1]
@@ -49,12 +61,12 @@ class DecisionTree:
             right_split = labels[np.logical_not(points)]
             gain = self.split_gain(labels, left_split, right_split)
             if gain > max_gain:
-                split = fsplit
+                splitting_criteria = fsplit
                 max_gain = gain
-        return split, max_gain
+        return splitting_criteria, max_gain
 
-    def compare(self, data, split, feature):
-        return data[:, feature] <= split
+    def compare(self, data, split_criteria, feature):
+        return data[:, feature] <= split_criteria
 
     def feature_possible_splits(self, data, feature):
         limits = []
@@ -68,30 +80,29 @@ class DecisionTree:
                     limits.append((dp[i][0]+dp[i+1][0])/2)
         return limits
 
-    def gini_impurity(self, X, gini_parent=1):
+    def gini_impurity(self, data):
         """
         Calculate impurity of a Tree Node
-        :param X: Data with labels
+        :param data: Data with labels
         :return:
         """
-        counts = self.label_counts(X[:, -1])
+        counts = self.label_counts(data[:, -1])
         gini_child = 0
         for k, v in counts.items():
-            gini_child += (v/len(X))**2
-        return gini_parent - gini_child
+            gini_child += (v / len(data)) ** 2
+        return 1 - gini_child
 
-    def split_gain(self, parent, lchild, rchild, gini=1):
+    def split_gain(self, parent, lchild, rchild):
         """
 
-        :param gini: gini index of parent's parent node
         :param parent: labels in parent node
         :param lchild: labels in Left child node
         :param rchild: labels in Right child node
         :return: Gain by using this split
         """
-        gini_parent = self.gini_impurity(parent, gini)
-        gini_lchild = self.gini_impurity(lchild, gini_parent)
-        gini_rchild = self.gini_impurity(rchild, gini_parent)
+        gini_parent = self.gini_impurity(parent)
+        gini_lchild = self.gini_impurity(lchild)
+        gini_rchild = self.gini_impurity(rchild)
         N, Ni, Nj = len(parent), len(lchild), len(rchild)
         gain = gini_parent - ((Ni/N)*gini_lchild + (Nj/N)*gini_rchild)
         return gain
@@ -111,20 +122,40 @@ class DecisionTree:
             c[l] = counts[i]
         return c
 
-    def build_tree(self, data, parent_gini=1):
+    def split_data(self, data, feature, criteria):
+        indices = self.compare(data, criteria, feature)
+        left = data[indices]
+        right = data[np.logical_not(indices)]
+        return left, right
+
+    def build_tree(self, data, depth=1, max_depth=5):
         tree = Node()
-        tree.gini = self.gini_impurity(data, tree.parent_gini)
+        tree.gini = self.gini_impurity(data)
         tree.datapoints = len(data)
 
-        if len(np.unique(data[:, -1])) == 1:
-            tree.prediction = data[0, -1]
-            return tree
-
-        split_feature, split = self.select_feature(data)
-        if split_feature == None:
+        if len(np.unique(data[:, -1])) == 1 or depth == max_depth:
             tree.prediction = self.majority_label(data[:, -1])
             return tree
 
+        split_feature, splitting_criteria = self.select_feature(data)
+        if split_feature is None:
+            tree.prediction = self.majority_label(data[:, -1])
+            return tree
 
+        tree.feature = split_feature
+        tree.split_criteria = splitting_criteria
 
-        return
+        left_data, right_data = self.split_data(data, split_feature, splitting_criteria)
+        depth = depth + 1
+        tree.left = self.build_tree(left_data, depth, max_depth)
+        tree.right = self.build_tree(right_data, depth, max_depth)
+
+        return tree
+
+    def classify(self, X, decision_tree):
+        X = X.reshape(1, np.newaxis)
+        if decision_tree.prediction is not None:
+            return decision_tree.prediction
+        if self.compare(X, decision_tree.split_criteria, decision_tree.feature):
+            return self.classify(X, decision_tree.left)
+        return self.classify(X, decision_tree.right)
