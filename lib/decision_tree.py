@@ -6,13 +6,13 @@ class Node:
     def __init__(self, feature=None, left=None, right=None):
         self.feature = feature
         self.gini = None
-        self.parent_gini = None
+        #self.parent_gini = None
         self.split_criteria = None
         self.datapoints = None
         self.left = left
         self.right = right
-        self.isLeaf = False
-        self.parent = None
+        #self.isLeaf = False
+        #self.parent = None
         self.prediction = None
 
 
@@ -56,9 +56,9 @@ class DecisionTree:
         branches = self.feature_possible_splits(data, feature)
         labels = data[:, -1]
         for fsplit in branches:
-            points = self.compare(data[:, :-1], fsplit, feature)
-            left_split = labels[points]
-            right_split = labels[np.logical_not(points)]
+            indices = self.compare(data[:, :-1], fsplit, feature)
+            left_split = labels[indices]
+            right_split = labels[np.logical_not(indices)]
             gain = self.split_gain(labels, left_split, right_split)
             if gain > max_gain:
                 splitting_criteria = fsplit
@@ -80,16 +80,16 @@ class DecisionTree:
                     limits.append((dp[i][0]+dp[i+1][0])/2)
         return limits
 
-    def gini_impurity(self, data):
+    def gini_impurity(self, labels):
         """
         Calculate impurity of a Tree Node
-        :param data: Data with labels
+        :param labels: labels in the dataset
         :return:
         """
-        counts = self.label_counts(data[:, -1])
+        counts = self.label_counts(labels)
         gini_child = 0
         for k, v in counts.items():
-            gini_child += (v / len(data)) ** 2
+            gini_child += (v / len(labels)) ** 2
         return 1 - gini_child
 
     def split_gain(self, parent, lchild, rchild):
@@ -130,7 +130,7 @@ class DecisionTree:
 
     def build_tree(self, data, depth=1, max_depth=5):
         tree = Node()
-        tree.gini = self.gini_impurity(data)
+        tree.gini = self.gini_impurity(data[:, -1])
         tree.datapoints = len(data)
 
         if len(np.unique(data[:, -1])) == 1 or depth == max_depth:
@@ -153,9 +153,9 @@ class DecisionTree:
         return tree
 
     def classify(self, X, decision_tree):
-        X = X.reshape(1, np.newaxis)
-        if decision_tree.prediction is not None:
+        X1 = X[np.newaxis, :]
+        if decision_tree.prediction != None:
             return decision_tree.prediction
-        if self.compare(X, decision_tree.split_criteria, decision_tree.feature):
+        if self.compare(X1, decision_tree.split_criteria, decision_tree.feature):
             return self.classify(X, decision_tree.left)
         return self.classify(X, decision_tree.right)
