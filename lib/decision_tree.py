@@ -6,13 +6,10 @@ class Node:
     def __init__(self, feature=None, left=None, right=None):
         self.feature = feature
         self.gini = None
-        #self.parent_gini = None
         self.split_criteria = None
         self.datapoints = None
         self.left = left
         self.right = right
-        #self.isLeaf = False
-        #self.parent = None
         self.prediction = None
 
 
@@ -128,7 +125,7 @@ class DecisionTree:
         right = data[np.logical_not(indices)]
         return left, right
 
-    def build_tree(self, data, depth=1, max_depth=5):
+    def build_tree(self, data, depth=1, max_depth=5, random=False):
         tree = Node()
         tree.gini = self.gini_impurity(data[:, -1])
         tree.datapoints = len(data)

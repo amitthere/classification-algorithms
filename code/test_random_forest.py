@@ -1,5 +1,5 @@
 import numpy as np
-from decision_tree import DecisionTree
+from random_forest import RandomForest
 from sklearn.model_selection import KFold
 
 
@@ -12,14 +12,10 @@ def main():
         dataset2[dataset2 == v] = str(i)
     d2 = dataset2.astype('float')
 
-    dt1 = DecisionTree().build_tree(dataset1[:-20])
-    # l = DecisionTree().classify( dataset1[-3, :-1], dt1)
-    dt2 = DecisionTree().build_tree(d2[:-20])
-    # l2 = DecisionTree().classify(d2[-3, :-1], dt2)
 
-    # TODO Apply 10 fold cross-validation
+    # TODO Do 10-fold cross validation
 
-    # TODO Calculate Accuracy, Precision, Recall, and F-1 measure
+    # TODO Use Metrics to calculate required numbers
 
     return
 
