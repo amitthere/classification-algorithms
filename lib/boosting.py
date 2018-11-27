@@ -45,5 +45,3 @@ class AdaBoost:
         y_pred = self.classify(X)
         y_pred[y_pred == -1] = 0
         return Metrics(y, y_pred)
-
-    

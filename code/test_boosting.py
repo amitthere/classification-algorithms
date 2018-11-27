@@ -26,13 +26,44 @@ def load_d4():
     return dataset4
 
 
+def pa3_demo():
+    return
+
+
 def main():
+    d1 = np.genfromtxt(r'..\data\dataset1.txt', dtype=float, delimiter='\t')
+    d2 = load_d2()
+    d3 = np.genfromtxt(r'..\data\project3_dataset3_train.txt', dtype=float, delimiter='\t')
+    d4 = load_d4()
 
+    X = d1
+    k=10
+    kf = KFold(n_splits=k)
 
+    for n_classifier in range(10, 80, 10):
+        accuracy = 0
+        precision = 0
+        recall = 0
+        f1_measure = 0
 
-    # TODO Do 10-fold cross validation
+        for train_index, test_index in kf.split(X):
+            y_train = X[train_index, -1]
+            y_train[y_train == 0] = -1
 
-    # TODO Use Metrics to calculate required numbers
+            classifier = AdaBoost(n_classifier)
+            classifier.train_model(X[train_index, :-1], X[train_index, -1])
+            metrics = classifier.boosting_score(X[test_index, :-1], X[test_index, -1])
+
+            accuracy += metrics.accuracy()
+            precision += metrics.precision()
+            recall += metrics.recall()
+            f1_measure += metrics.f1_measure()
+
+        print('\nAdaBoost with ' + str(n_classifier) + ' classifiers:')
+        print('AdaBoost Accuracy ' + str(accuracy / k))
+        print('AdaBoost Precision ' + str(precision / k))
+        print('AdaBoost Recall ' + str(recall / k))
+        print('AdaBoost F1 Measure ' + str(f1_measure / k))
 
     return
 

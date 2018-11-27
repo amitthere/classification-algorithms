@@ -31,7 +31,7 @@ def pa3_demo():
 
 
 def main():
-    dataset1 = np.genfromtxt(r'..\data\dataset1.txt', dtype=float, delimiter='\t')
+    d1 = np.genfromtxt(r'..\data\dataset1.txt', dtype=float, delimiter='\t')
     d2 = load_d2()
     d3 = np.genfromtxt(r'..\data\project3_dataset3_train.txt', dtype=float, delimiter='\t')
     d4 = load_d4()
@@ -42,7 +42,7 @@ def main():
     # dt2 = DecisionTree().build_tree(d2[:-20])
     # l2 = DecisionTree().classify(d2[-3, :-1], dt2)
 
-    X = dataset1
+    X = d1
 
     # TODO Apply 10 fold cross-validation
     k=10
