@@ -1,6 +1,6 @@
 import numpy as np
+from metrics import Metrics
 from decision_tree import DecisionTree
-from sklearn.model_selection import KFold
 
 
 def load_d2():
