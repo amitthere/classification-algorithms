@@ -170,13 +170,14 @@ class DecisionTree:
 
         return tree
 
-    """ For Printing Tree 
+    """ For Printing Tree """
     def __str__(self, level=0):
         ret = "\t"*level+repr(self.value)+"\n"
         for child in self.children:
             ret += child.__str__(level+1)
         return ret
 
-    def __repr__(self):
+    def __repr__(self, node, depth=1):
+        rep = "\t"*1
         return '<tree node representation>'
-    """
+

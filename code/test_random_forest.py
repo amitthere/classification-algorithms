@@ -27,7 +27,7 @@ def load_d4():
 
 
 def pa3_demo(X_train, X_test):
-    
+
     return
 
 
@@ -57,7 +57,7 @@ def main():
             recall += m.recall()
             f1_measure += m.f1_measure()
 
-        print('Random Forest Size : ' + str(tree_count))
+        print('\nRandom Forest Size : ' + str(tree_count))
         print('Random Forest Accuracy ' + str(accuracy/k))
         print('Random Forest Precision ' + str(precision/k))
         print('Random Forest Recall ' + str(recall/k))

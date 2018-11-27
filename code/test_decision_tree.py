@@ -26,6 +26,10 @@ def load_d4():
     return dataset4
 
 
+def pa3_demo():
+    return
+
+
 def main():
     dataset1 = np.genfromtxt(r'..\data\dataset1.txt', dtype=float, delimiter='\t')
     d2 = load_d2()
