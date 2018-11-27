@@ -59,11 +59,11 @@ def main():
             recall += metrics.recall()
             f1_measure += metrics.f1_measure()
 
-        print('\nAdaBoost with ' + str(n_classifier) + ' classifiers:')
-        print('AdaBoost Accuracy ' + str(accuracy / k))
-        print('AdaBoost Precision ' + str(precision / k))
-        print('AdaBoost Recall ' + str(recall / k))
-        print('AdaBoost F1 Measure ' + str(f1_measure / k))
+        print('\nAdaBoost with ' + str(n_classifier) + ' weak classifiers:')
+        print('Accuracy ' + str(accuracy / k))
+        print('Precision ' + str(precision / k))
+        print('Recall ' + str(recall / k))
+        print('F1 Measure ' + str(f1_measure / k))
 
     return
 

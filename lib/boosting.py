@@ -28,7 +28,7 @@ class AdaBoost:
             if error < 0.5:
                 alpha = (np.log(1 - error) - np.log(error))/2.0
                 weights = weights*np.exp(-alpha*y*y_pred)
-                weights = weights/sum(weights)
+                weights = np.divide(weights, sum(weights))
                 self.classifiers.append(tree)
                 self.classifier_weight.append(alpha)
 

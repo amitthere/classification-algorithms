@@ -12,6 +12,20 @@ class Node:
         self.right = right
         self.prediction = None
 
+    def print(self, ret='', depth=1):
+        ret = "\t" * int(depth) + str('feature_' + str(self.feature) + ' value:' + str(self.split_criteria)) + "\n"
+        branch = self.left
+        if branch is not None:
+            ret += branch.print(ret, depth + 1)
+        else:
+            return ret
+        branch = self.right
+        if branch is not None:
+            ret += branch.print(ret, depth + 1)
+        else:
+            return ret
+        return ret
+
 
 class DecisionTree:
 
@@ -169,15 +183,3 @@ class DecisionTree:
         tree.right = self.build_tree(right_data, depth, max_depth, random)
 
         return tree
-
-    """ For Printing Tree """
-    def __str__(self, level=0):
-        ret = "\t"*level+repr(self.value)+"\n"
-        for child in self.children:
-            ret += child.__str__(level+1)
-        return ret
-
-    def __repr__(self, node, depth=1):
-        rep = "\t"*1
-        return '<tree node representation>'
-

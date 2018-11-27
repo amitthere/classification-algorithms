@@ -45,7 +45,7 @@ def main():
     X = d1
 
     # TODO Apply 10 fold cross-validation
-    k=10
+    k = 10
     kf = KFold(n_splits=k)
 
     accuracy = 0
@@ -57,6 +57,7 @@ def main():
 
         dt = DecisionTree()
         tree = dt.build_tree(X[train_index])
+        # tree.print(1)
         y_pred = dt.test_classifier(X[test_index, :-1], tree)
 
         m = Metrics(X[test_index, -1], y_pred)
