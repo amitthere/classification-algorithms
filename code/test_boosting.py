@@ -37,7 +37,7 @@ def main():
     d4 = load_d4()
 
     X = d1
-    k=10
+    k = 10
     kf = KFold(n_splits=k)
 
     for n_classifier in range(10, 80, 10):
@@ -51,7 +51,7 @@ def main():
             y_train[y_train == 0] = -1
 
             classifier = AdaBoost(n_classifier)
-            classifier.train_model(X[train_index, :-1], X[train_index, -1])
+            classifier.train_model(X[train_index])
             metrics = classifier.boosting_score(X[test_index, :-1], X[test_index, -1])
 
             accuracy += metrics.accuracy()

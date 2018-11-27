@@ -13,17 +13,15 @@ class AdaBoost:
     def bootstrap(self, weights):
         return np.random.choice(len(weights), size=len(weights), replace=True, p=weights)
 
-    def train_model(self, X, y):
+    def train_model(self, X):
         weights = np.ones(len(X))/len(X)
 
+        y = X[:, -1]
         while self.n_classifier > len(self.classifiers):
             sample_indices = self.bootstrap(weights)
-            X_train = X[sample_indices]
-            y_train = y[sample_indices]
 
-            data = np.vstack((X_train, y_train))
             dt = DecisionTree()
-            tree = dt.build_tree(data, max_depth=5)
+            tree = dt.build_tree(X[sample_indices], max_depth=5)
             y_pred = dt.test_classifier(X, tree)
 
             error = weights.dot(y_pred != y)
