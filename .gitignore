@@ -6,3 +6,4 @@ log/
 
 ### pycache ###
 code/__pycache__
+lib/__pycache__

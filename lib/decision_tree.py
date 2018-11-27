@@ -7,7 +7,7 @@ class Node:
         self.feature = feature
         self.gini = None
         self.split_criteria = None
-        self.datapoints = None
+        self.n_datapoints = None
         self.left = left
         self.right = right
         self.prediction = None
@@ -26,11 +26,11 @@ class DecisionTree:
             return self.classify(X, decision_tree.left)
         return self.classify(X, decision_tree.right)
 
-    def test_classifier(self, data, decision_tree):
+    def test_classifier(self, X_test, decision_tree):
         labels = []
-        if data.ndim == 1:
-            return self.classify(data, decision_tree)
-        for point in data:
+        if X_test.ndim == 1:
+            return self.classify(X_test, decision_tree)
+        for point in X_test:
             label = self.classify(point, decision_tree)
             labels.append(label)
         return labels
@@ -146,7 +146,7 @@ class DecisionTree:
     def build_tree(self, data, depth=1, max_depth=5, random=False):
         tree = Node()
         tree.gini = self.gini_impurity(data[:, -1])
-        tree.datapoints = len(data)
+        tree.n_datapoints = len(data)
 
         if len(np.unique(data[:, -1])) == 1 or depth == max_depth:
             tree.prediction = self.majority_label(data[:, -1])

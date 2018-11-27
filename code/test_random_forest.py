@@ -1,6 +1,7 @@
 import numpy as np
 from metrics import Metrics
 from random_forest import RandomForest
+from sklearn.model_selection import KFold
 
 
 def load_d2():
