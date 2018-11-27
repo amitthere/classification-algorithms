@@ -14,13 +14,28 @@ class Node:
 
 
 class DecisionTree:
-    """
 
-    """
     def __init__(self):
         return
 
-    def select_feature(self, data):
+    def classify(self, X, decision_tree):
+        X1 = X[np.newaxis, :]
+        if decision_tree.prediction != None:
+            return decision_tree.prediction
+        if self.compare(X1, decision_tree.split_criteria, decision_tree.feature):
+            return self.classify(X, decision_tree.left)
+        return self.classify(X, decision_tree.right)
+
+    def test_classifier(self, data, decision_tree):
+        labels = []
+        if data.ndim == 1:
+            return self.classify(data, decision_tree)
+        for point in data:
+            label = self.classify(point, decision_tree)
+            labels.append(label)
+        return labels
+
+    def select_feature(self, data, random):
         """ Choose the feature among all available to be split at current node
 
         :param data: attribute values with label
@@ -30,7 +45,10 @@ class DecisionTree:
         feature = None
         splitting_criteria = None
 
-        features = np.array(range(data.shape[1]-1))
+        if random:
+            features = np.random.choice(data.shape[1]-1, int(len(data.shape[1]-1)/5), replace=False)
+        else:
+            features = np.array(range(data.shape[1]-1))
 
         for f in features:
             rsplit, gain = self.split_feature(data, f)
@@ -134,7 +152,7 @@ class DecisionTree:
             tree.prediction = self.majority_label(data[:, -1])
             return tree
 
-        split_feature, splitting_criteria = self.select_feature(data)
+        split_feature, splitting_criteria = self.select_feature(data, random)
         if split_feature is None:
             tree.prediction = self.majority_label(data[:, -1])
             return tree
@@ -144,15 +162,7 @@ class DecisionTree:
 
         left_data, right_data = self.split_data(data, split_feature, splitting_criteria)
         depth = depth + 1
-        tree.left = self.build_tree(left_data, depth, max_depth)
-        tree.right = self.build_tree(right_data, depth, max_depth)
+        tree.left = self.build_tree(left_data, depth, max_depth, random)
+        tree.right = self.build_tree(right_data, depth, max_depth, random)
 
         return tree
-
-    def classify(self, X, decision_tree):
-        X1 = X[np.newaxis, :]
-        if decision_tree.prediction != None:
-            return decision_tree.prediction
-        if self.compare(X1, decision_tree.split_criteria, decision_tree.feature):
-            return self.classify(X, decision_tree.left)
-        return self.classify(X, decision_tree.right)

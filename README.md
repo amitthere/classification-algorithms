@@ -19,12 +19,12 @@ Accuracy, Precision, Recall, and F-1 measure of the classifiers is reported.
 
 ### Test Datasets
 
-|     Dataset    |  Objects  | Number of Classes |
-|:--------------:|:---------:|:-----------------:|
-| dataset1       |    569    |        2          |
-| dataset2       |    462    |        2          |
-| demo-dataset-1 |    150    |        2          |
-| demo-dataset-2 |     6     |        2          |
+|     Dataset       |  Objects  | Number of Classes |
+|:-----------------:|:---------:|:-----------------:|
+| dataset1          |    569    |        2          |
+| dataset2          |    462    |        2          |
+| project3_dataset3 |    100    |        2          |
+| project3_dataset4 |    14     |        2          |
 
 
 ### Dataset Format
