@@ -19,7 +19,10 @@ class DecisionTree:
         return
 
     def classify(self, X, decision_tree):
-        X1 = X[np.newaxis, :]
+        if X.ndim == 1:
+            X1 = X[np.newaxis, :]
+        else:
+            X1 = X
         if decision_tree.prediction != None:
             return decision_tree.prediction
         if self.compare(X1, decision_tree.split_criteria, decision_tree.feature):
@@ -46,7 +49,7 @@ class DecisionTree:
         splitting_criteria = None
 
         if random:
-            features = np.random.choice(data.shape[1]-1, int(len(data.shape[1]-1)/5), replace=False)
+            features = np.random.choice(data.shape[1]-1, int((data.shape[1]-1)/5), replace=False)
         else:
             features = np.array(range(data.shape[1]-1))
 
@@ -143,7 +146,7 @@ class DecisionTree:
         right = data[np.logical_not(indices)]
         return left, right
 
-    def build_tree(self, data, depth=1, max_depth=5, random=False):
+    def build_tree(self, data, depth=1, max_depth=25, random=False):
         tree = Node()
         tree.gini = self.gini_impurity(data[:, -1])
         tree.n_datapoints = len(data)
@@ -166,3 +169,14 @@ class DecisionTree:
         tree.right = self.build_tree(right_data, depth, max_depth, random)
 
         return tree
+
+    """ For Printing Tree 
+    def __str__(self, level=0):
+        ret = "\t"*level+repr(self.value)+"\n"
+        for child in self.children:
+            ret += child.__str__(level+1)
+        return ret
+
+    def __repr__(self):
+        return '<tree node representation>'
+    """

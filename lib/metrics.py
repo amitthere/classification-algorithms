@@ -14,12 +14,12 @@ class Metrics:
         for i in range(len(y_true)):
             if int(y_true[i]) == int(y_pred[i]) == 1:
                 self.TP += 1
-            elif int(y_true[i]) == int(y_pred[i]) == 0:
+            if int(y_true[i]) == int(y_pred[i]) == 0:
                 self.TN += 1
-            elif int(y_true[i]) != int(y_pred[i]):
+            if int(y_true[i]) != int(y_pred[i]):
                 if int(y_true[i]) == 0:
                     self.FP += 1
-            elif int(y_true[i]) != int(y_pred[i]):
+            if int(y_true[i]) != int(y_pred[i]):
                 if int(y_true[i]) == 1:
                     self.FN += 1
 
